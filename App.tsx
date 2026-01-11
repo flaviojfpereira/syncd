@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { User, Habit } from './types';
-import { getIdentityLabel, getHabitStage, getStageLabel } from './utils/identity';
+import { getIdentityLabel, getStageLabel } from './utils/identity';
 import { useHaptics } from './components/HapticEngine';
 import { TheCurrent } from './components/TheCurrent';
 
@@ -53,7 +53,7 @@ const SYNC_HOUR = 21;
 
 export default function App() {
   const [user, setUser] = useState<User>(INITIAL_USER);
-  const [friends, setFriends] = useState<User[]>(MOCK_FRIENDS);
+  const [friends] = useState<User[]>(MOCK_FRIENDS);
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
   const [isSimulatedShake, setIsSimulatedShake] = useState(false);
   
@@ -86,17 +86,13 @@ export default function App() {
       ...prev,
       habits: prev.habits.map(h => {
         if (h.id === reflectionTargetId) {
-          // If in Stasis (missed yesterday), we don't increase streak, we just save it.
-          // If Active, we increase streak.
-          // For simplicity in this demo: Acknowledge stasis = keep streak. Active = +1.
-          
           const newStreak = h.status === 'ACTIVE' ? h.streakDays + 1 : h.streakDays;
           
           return { 
             ...h, 
             streakDays: newStreak,
             lastLogged: new Date(currentTime),
-            status: 'ACTIVE' // Reset to active
+            status: 'ACTIVE'
           };
         }
         return h;
@@ -266,7 +262,7 @@ export default function App() {
         </section>
       </main>
 
-      {/* RITUAL MODALS - UPDATED FOR REDUCED FRICTION */}
+      {/* RITUAL MODALS */}
       {reflectionTargetId && (
         <div className="fixed inset-0 z-[100] bg-void/98 backdrop-blur-3xl flex items-center justify-center p-8">
           <div className="w-full max-w-md space-y-12">
@@ -292,7 +288,6 @@ export default function App() {
               <button onClick={() => setReflectionTargetId(null)} className="flex-1 py-4 text-[9px] tracking-widest text-zinc-700 hover:text-white uppercase transition-colors">Discard</button>
               <button 
                 onClick={confirmLogHabit} 
-                // Removed disabled requirement for friction reduction
                 className={`flex-1 py-4 text-[9px] tracking-widest uppercase transition-all
                   ${user.habits.find(h => h.id === reflectionTargetId)?.status === 'STASIS' 
                     ? 'bg-red-900/20 text-red-500 border border-red-900/50 hover:bg-red-900/40' 
@@ -335,9 +330,20 @@ export default function App() {
         onLeave={() => setUser(p=>({...p, focusSession:{isActive:false}}))} 
       />
 
-      <div className="fixed bottom-4 left-4 flex flex-col gap-2 z-[70] opacity-5 hover:opacity-100 transition-opacity">
-        <button onClick={toggleTime} className="bg-zinc-900 border border-zinc-800 text-[8px] p-2 text-zinc-600 uppercase tracking-widest">Toggle Time</button>
-        <button onClick={() => { triggerJolt(); setIsSimulatedShake(true); setTimeout(() => setIsSimulatedShake(false), 500); }} className="bg-zinc-900 border border-zinc-800 text-[8px] p-2 text-zinc-600 uppercase tracking-widest">Debug Jolt</button>
+      {/* DEBUG PANEL - ALWAYS VISIBLE */}
+      <div className="fixed bottom-4 left-4 flex flex-col gap-2 z-[70]">
+        <button 
+          onClick={toggleTime} 
+          className="bg-zinc-900/40 border border-zinc-800/40 text-[8px] p-2 text-zinc-500 hover:text-white hover:border-white/20 transition-all uppercase tracking-widest"
+        >
+          Toggle Time
+        </button>
+        <button 
+          onClick={() => { triggerJolt(); setIsSimulatedShake(true); setTimeout(() => setIsSimulatedShake(false), 500); }} 
+          className="bg-zinc-900/40 border border-zinc-800/40 text-[8px] p-2 text-zinc-500 hover:text-white hover:border-white/20 transition-all uppercase tracking-widest"
+        >
+          Debug Jolt
+        </button>
       </div>
     </div>
   );

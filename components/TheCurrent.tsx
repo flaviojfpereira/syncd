@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { User } from '../types';
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
   onLeave: () => void;
 }
 
-export const TheCurrent: React.FC<Props> = ({ user, friends, onJoin, onLeave }) => {
+export const TheCurrent = ({ user, friends, onJoin, onLeave }: Props) => {
   const [seconds, setSeconds] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
   
@@ -16,8 +16,6 @@ export const TheCurrent: React.FC<Props> = ({ user, friends, onJoin, onLeave }) 
   const [verification, setVerification] = useState('');
   const [isJoining, setIsJoining] = useState(false);
 
-  // Removed triggerHum to protect deep work focus
-  
   const activeFriends = friends.filter(f => f.focusSession.isActive);
   const totalActive = activeFriends.length + (user.focusSession.isActive ? 1 : 0);
   const isActive = user.focusSession.isActive;
@@ -27,7 +25,6 @@ export const TheCurrent: React.FC<Props> = ({ user, friends, onJoin, onLeave }) 
     if (isActive) {
       interval = setInterval(() => {
         setSeconds(s => s + 1);
-        // Haptic hum removed per "Zero Noise" feedback
       }, 1000);
     } else {
       setSeconds(0);
