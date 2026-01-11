@@ -336,13 +336,13 @@ export default function App() {
           onClick={toggleTime} 
           className="bg-zinc-900/40 border border-zinc-800/40 text-[8px] p-2 text-zinc-500 hover:text-white hover:border-white/20 transition-all uppercase tracking-widest"
         >
-          Toggle Time
+          After/Before 9pm
         </button>
         <button 
           onClick={() => { triggerJolt(); setIsSimulatedShake(true); setTimeout(() => setIsSimulatedShake(false), 500); }} 
           className="bg-zinc-900/40 border border-zinc-800/40 text-[8px] p-2 text-zinc-500 hover:text-white hover:border-white/20 transition-all uppercase tracking-widest"
         >
-          Debug Jolt
+          Feel Jolt
         </button>
       </div>
     </div>
